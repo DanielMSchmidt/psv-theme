@@ -17,4 +17,4 @@ Simply
   - run ``vagrant up`` to start your VM
   - run ``vagrant provision`` to provision the VM
   - get a coffee, this may take a while
-  - get a look at wordpress at ``localhost:9000``
+  - get a look at wordpress at ``localhost:3000``
