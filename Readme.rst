@@ -18,3 +18,14 @@ Simply
   - run ``vagrant provision`` to provision the VM
   - get a coffee, this may take a while
   - get a look at wordpress at ``localhost:3000``
+
+
+TODOS
+=====
+
+- Add some basic content like it would appear on the site
+- Look which template fits best
+- enhance this template
+
+- build a plugin for calendar entries or find a suitable one
+- find a solution for always having a post_image (for image slider)
