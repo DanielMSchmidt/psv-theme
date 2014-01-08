@@ -1,0 +1,16 @@
+{
+  "name": "psv-wordpress",
+  "version": "0.1.0",
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-coffee": "~0.7.0",
+    "grunt-contrib-compass" : "~0.7.0",
+    "grunt-contrib-watch": "~0.5.2",
+    "load-grunt-tasks": "~0.1.0",
+    "time-grunt": "~0.1.1"
+  },
+  "engines": {
+    "node": ">=0.8.0"
+  }
+}
