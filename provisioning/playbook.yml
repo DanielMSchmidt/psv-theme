@@ -1,0 +1,87 @@
+---
+- hosts: server
+  user: vagrant
+  sudo: True
+
+  vars_prompt:
+    project_name: "What is your project name?"
+    mysql_user: "What should your mysql user be named?"
+    mysql_pwd: "What is your password?"
+
+  tasks:
+    - name: install locales
+      apt: pkg=$item state=installed
+      with_items:
+        - language-pack-de-base
+        - language-pack-de
+        - locales
+
+    - name: generate locales
+      shell: sudo locale-gen
+
+    - name: install essentials
+      apt: pkg=$item state=installed
+      with_items:
+        - php5-mysql
+        - php5-mcrypt
+        - php-pear
+        - php5-dev
+        - php5-cli
+        - libapache2-mod-php5
+        - apache2
+        - mysql-server
+        - python-mysqldb
+
+    - name: mod rewrite aktivieren
+      shell: sudo a2enmod rewrite
+
+    - name: add mysql user
+      mysql_user: name=$mysql_user password=$mysql_pwd priv=*.*:ALL state=present
+
+    - name: add wordpress db
+      mysql_db: name="wordpress_{{ project_name }}" state=present login_user=$mysql_user login_password=$mysql_pwd
+
+    - name: add v-host
+      template: src=templates/vhost dest=/etc/apache2/sites-available/$project_name mode=0600 owner=vagrant
+
+    - name: deactivate old v-host
+      shell: sudo rm /etc/apache2/sites-enabled/*
+
+    - name: activate v-host
+      shell: sudo a2ensite $project_name
+      notify: restart apache
+
+    - name: download wordpress
+      shell: wget http://wordpress.org/latest.tar.gz && tar -xzvf latest.tar.gz
+
+    - name: clear /var/www
+      shell: rm -rf /var/www/*
+
+    - name: move wordpress to /var/www
+      shell: sudo mv -u wordpress/ /var/www/
+
+    - name: put wp-config in place
+      template: src=templates/wp-config.php dest=/var/www/wordpress/wp-config.php owner=www-data group=www-data
+
+    - name: remove original wordpress themes
+      shell: rm -Rf /var/www/wordpress/wp-content/themes
+
+    - name: remove original wordpress plugins
+      shell: rm -Rf /var/www/wordpress/wp-content/plugins
+
+    - name: create symlink for themes
+      file: src=/vagrant/themes dest=/var/www/wordpress/wp-content/themes state=link force=yes
+
+    - name: create symlink for plugins
+      file: src=/vagrant/plugins dest=/var/www/wordpress/wp-content/plugins state=link force=yes
+
+    - name: finishing
+      debug: msg="Congratulations, your MySQL Login is {{ mysql_user }} / {{ mysql_pwd }} and you find your Wordpress database at wordpress_{{ project_name }}"
+
+
+  handlers:
+    - name: restart php
+      service: name=php5-fpm state=restarted
+
+    - name: restart apache
+      service: name=apache2 state=restarted
