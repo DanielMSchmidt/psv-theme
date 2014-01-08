@@ -3,10 +3,10 @@
   user: vagrant
   sudo: True
 
-  vars_prompt:
-    project_name: "What is your project name?"
-    mysql_user: "What should your mysql user be named?"
-    mysql_pwd: "What is your password?"
+  vars:
+    project_name: "psv"
+    mysql_user: "psv"
+    mysql_pwd: "testtest"
 
   tasks:
     - name: install locales
