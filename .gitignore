@@ -30,3 +30,4 @@ Icon
 .Trashes
 node_modules/
 provisioning/credentials/
+dump.sql
