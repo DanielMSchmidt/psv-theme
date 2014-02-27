@@ -6,7 +6,9 @@
   vars:
     project_name: "psv"
     mysql_user: "psv"
-    mysql_pwd: "testtest"
+    mysql_pwd: "{{lookup('password', 'credentials/mysql_pwd' )}}"
+    mysql_db:  "{{ project_name }}_wordpress"
+    secret: "{{lookup('password', 'credentials/secret' )}}"
 
   tasks:
     - name: install locales
@@ -39,7 +41,7 @@
       mysql_user: name=$mysql_user password=$mysql_pwd priv=*.*:ALL state=present
 
     - name: add wordpress db
-      mysql_db: name="wordpress_{{ project_name }}" state=present login_user=$mysql_user login_password=$mysql_pwd
+      mysql_db: name=$mysql_db state=present login_user=$mysql_user login_password=$mysql_pwd
 
     - name: add v-host
       template: src=templates/vhost dest=/etc/apache2/sites-available/$project_name mode=0600 owner=vagrant
@@ -62,6 +64,11 @@
 
     - name: put wp-config in place
       template: src=templates/wp-config.php dest=/var/www/wordpress/wp-config.php owner=www-data group=www-data
+      with_items:
+        - mysql_user
+        - mysql_pwd
+        - mysql_db
+        - secret
 
     - name: remove original wordpress themes
       shell: rm -Rf /var/www/wordpress/wp-content/themes
