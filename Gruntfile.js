@@ -47,9 +47,9 @@ module.exports = function (grunt) {
                     // rather than compiling multiple files here you should
                     // require them into your main .coffee file
                     expand: true,
-                    cwd: '',
+                    cwd: 'themes/psv-theme',
                     src: '**/*.sass',
-                    dest: '',
+                    dest: 'stylesheets',
                     ext: '.css'
                 }]
             }
