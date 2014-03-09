@@ -31,3 +31,5 @@ Icon
 node_modules/
 provisioning/credentials/
 dump.sql
+
+.sass-cache
